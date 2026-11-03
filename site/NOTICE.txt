@@ -1,0 +1,13 @@
+This site is a build of the floorplan-viewer app from mermaid-floorplan,
+licensed under the GNU General Public License v3 (see LICENSE-GPL-3.0.txt).
+Copyright (C) 2025-2026 Malar Kannan. The bundled libraries
+floorplan-language, floorplan-3d-core and floorplan-common are MIT-licensed.
+
+Upstream source: https://github.com/malarbase/mermaid-floorplan
+Commit:          ab2053df11ea09d8f3505a008b66bc5a2189d9ab
+
+Modification: the viewer's default plan is replaced with vastu-home.floorplan.
+Both the patch (viewer-default-plan.patch) and the plan file are served
+next to this notice. Build: apply the patch at that commit, copy the plan
+to vastu/vastu-home.floorplan, then run `npm run build -w floorplan-viewer`
+after building its workspace dependencies.

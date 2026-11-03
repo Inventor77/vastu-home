@@ -1,0 +1,13 @@
+diff --git a/floorplan-viewer/src/main.ts b/floorplan-viewer/src/main.ts
+index 3a4659d..380f387 100644
+--- a/floorplan-viewer/src/main.ts
++++ b/floorplan-viewer/src/main.ts
+@@ -51,7 +51,7 @@ injectStyles();
+ // Initialize layout manager early so it can be used by UI components
+ const layoutManager = getLayoutManager();
+ 
+-import stairConstraintsExample from '../../examples/StairConstraints.floorplan?raw';
++import stairConstraintsExample from '../../vastu/vastu-home.floorplan?raw';
+ 
+ const defaultFloorplan = stairConstraintsExample;
+ 

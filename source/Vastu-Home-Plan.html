@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vastu Home Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout concept: a drafting-table app. Header with view controls, a large stage that holds either the
+   3D model or the 2D plan, a Vastu card that floats over the stage, and a checklist/sources column. */
+:root{
+  --font-display:'Barlow Semi Condensed','Arial Narrow',system-ui,sans-serif;
+  --font-body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  --paper:#E6ECEE; --panel:#F7F9FA; --ink:#10212C; --ink2:#52666F; --line:#C3CFD5;
+  --accent:#0A7B74; --accent-ink:#FFFFFF; --accent-soft:#D3ECE9;
+  --good:#1E7F4B; --warn:#8F6208; --warn-soft:#F4E7C8; --bad:#B3261E; --bad-soft:#F7DAD6; --grid:#D3DDE1; --furn:#F2F5F6;
+  --r-living:#E3D3B5; --r-bed:#CBD8EA; --r-kitchen:#F1D3A5; --r-wet:#BFE0DE; --r-stair:#D8D3E6; --r-terrace:#C3DDB5; --r-garage:#D3D8DB; --r-pooja:#F4D5A0;
+  --sc-bg:#BFD9E8; --sc-ground:#86AD66; --sc-road:#3F454B; --sc-wall:#4E6A85; --sc-wall-in:#8C7F78; --sc-slab:#5E656B; --sc-stair:#6E4324;
+  --f-living:#C08A4B; --f-bed:#9A5B34; --f-kitchen:#D2A86E; --f-wet:#5E3F26; --f-stair:#6E4324; --f-terrace:#A57446; --f-garage:#7E858B; --f-pooja:#C9822F;
+  --shadow:0 8px 28px rgba(16,33,44,.16);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1720; --panel:#13222D; --ink:#E4EDF1; --ink2:#98ABB6; --line:#243745;
+    --accent:#3CC6BB; --accent-ink:#06201E; --accent-soft:#123A3A;
+    --good:#4CC38A; --warn:#E0B04D; --warn-soft:#3A2F14; --bad:#F2867B; --bad-soft:#3E1C19; --grid:#16283A; --furn:#1B2F3C;
+    --r-living:#6C5E45; --r-bed:#3F5A7E; --r-kitchen:#80603A; --r-wet:#2F6B69; --r-stair:#58507A; --r-terrace:#43703F; --r-garage:#4A5156; --r-pooja:#8A6A2E;
+    --sc-bg:#142231; --sc-ground:#2B4529; --sc-road:#1C1F22; --sc-wall:#46617A; --sc-wall-in:#7A6E68; --sc-slab:#4A5056; --sc-stair:#5A371D;
+  --f-living:#9C6E3B; --f-bed:#7E4A2A; --f-kitchen:#AE8957; --f-wet:#4C331F; --f-stair:#5A371D; --f-terrace:#86603A; --f-garage:#5C6268; --f-pooja:#A66A26;
+    --shadow:0 8px 28px rgba(0,0,0,.5);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1720; --panel:#13222D; --ink:#E4EDF1; --ink2:#98ABB6; --line:#243745;
+  --accent:#3CC6BB; --accent-ink:#06201E; --accent-soft:#123A3A;
+  --good:#4CC38A; --warn:#E0B04D; --warn-soft:#3A2F14; --bad:#F2867B; --bad-soft:#3E1C19; --grid:#16283A; --furn:#1B2F3C;
+  --r-living:#6C5E45; --r-bed:#3F5A7E; --r-kitchen:#80603A; --r-wet:#2F6B69; --r-stair:#58507A; --r-terrace:#43703F; --r-garage:#4A5156; --r-pooja:#8A6A2E;
+  --sc-bg:#142231; --sc-ground:#2B4529; --sc-road:#1C1F22; --sc-wall:#46617A; --sc-wall-in:#7A6E68; --sc-slab:#4A5056; --sc-stair:#5A371D;
+  --f-living:#9C6E3B; --f-bed:#7E4A2A; --f-kitchen:#AE8957; --f-wet:#4C331F; --f-stair:#5A371D; --f-terrace:#86603A; --f-garage:#5C6268; --f-pooja:#A66A26;
+  --shadow:0 8px 28px rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink); font-family:var(--font-body); font-size:14px; line-height:1.45;
+  padding-block:10px;
+  padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex; flex-direction:column; gap:10px;
+}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 20px}
+.ttl{min-width:0}
+h1{margin:0;font-family:var(--font-display);font-weight:700;font-size:26px;letter-spacing:.01em;line-height:1.1}
+.sub{margin:2px 0 0;color:var(--ink2);font-family:var(--font-mono);font-size:11.5px;letter-spacing:.02em}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;background:var(--panel);overflow:hidden}
+.seg button{border:0;background:transparent;padding:6px 12px;font-weight:500;font-size:13px;color:var(--ink2)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.tg{display:inline-flex;gap:6px;flex-wrap:wrap}
+.tg button{border:1px solid var(--line);background:var(--panel);border-radius:7px;padding:6px 10px;font-size:13px;color:var(--ink2);font-weight:500}
+.tg button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:12px}
+.stage{position:relative;min-height:380px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--sc-bg);isolation:isolate}
+#c3{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#s2{position:absolute;inset:0;width:100%;height:100%;display:block;background:var(--paper)}
+#chips{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.chip{position:absolute;left:0;top:0;pointer-events:auto;display:flex;align-items:center;gap:6px;max-width:150px;
+  padding:2px 3px 2px 8px;border:1px solid var(--line);border-radius:999px;background:color-mix(in srgb,var(--panel) 92%,transparent);
+  box-shadow:0 1px 4px rgba(0,0,0,.18);will-change:transform;white-space:nowrap;line-height:1.15}
+.chip .nm{display:flex;flex-direction:column;text-align:left;min-width:0}
+.chip .nm b{font-family:var(--font-display);font-weight:600;font-size:12.5px;letter-spacing:.02em}
+.chip .nm small{font-family:var(--font-mono);font-size:10px;color:var(--ink2)}
+.chip .ib{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);
+  font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:14px}
+.chip.noname{padding:2px}
+#chips.is3 .chip{pointer-events:none;padding:2px 9px}
+#chips.is3 .ib,#chips.is3 .nm small{display:none}
+.chip.noname .nm{display:none}
+.chip[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.chip:hover{border-color:var(--accent)}
+.stagebar{position:absolute;right:10px;top:10px;display:flex;gap:6px;z-index:3}
+.stagebar button{border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 92%,transparent);border-radius:7px;padding:5px 9px;font-size:12px;font-weight:500}
+.hint{position:absolute;left:12px;top:12px;z-index:3;font-family:var(--font-mono);font-size:11px;color:var(--ink2);max-width:calc(100% - 190px);pointer-events:none}
+.compass{position:absolute;left:12px;top:44px;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);
+  background:color-mix(in srgb,var(--panel) 92%,transparent);z-index:3;display:grid;place-items:center;pointer-events:none}
+.compass i{position:absolute;inset:3px;display:block;transition:none}
+.compass i::before{content:"";position:absolute;left:50%;top:1px;width:0;height:0;margin-left:-5px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:15px solid var(--accent)}
+.compass i::after{content:"N";position:absolute;left:0;right:0;top:15px;text-align:center;font:600 11px var(--font-display);color:var(--ink)}
+.facing{position:absolute;left:64px;bottom:18px;z-index:3;font-family:var(--font-mono);font-size:11px;color:var(--ink2);pointer-events:none}
+.card.left{right:auto;left:12px}
+.card{position:absolute;right:12px;bottom:12px;z-index:6;width:min(390px,calc(100% - 24px));max-height:calc(100% - 64px);overflow:auto;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px 14px}
+.card h2{margin:6px 28px 6px 0;font-family:var(--font-display);font-size:21px;line-height:1.15;font-weight:700}
+.card h3{margin:12px 0 4px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2);font-weight:500}
+.card p{margin:0}
+.card ul{margin:0;padding-left:18px}
+.card li{margin:2px 0}
+.card .x{position:absolute;right:8px;top:8px;width:30px;height:30px;border-radius:50%;border:0;background:transparent;font-size:20px;line-height:1;color:var(--ink2)}
+.card .x:hover{background:var(--paper)}
+.badges{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:600;font-family:var(--font-display);letter-spacing:.04em;text-transform:uppercase}
+.badge.ideal{background:var(--accent-soft);color:var(--good)}
+.badge.permitted{background:var(--warn-soft);color:var(--warn)}
+.badge.caution{background:var(--bad-soft);color:var(--bad)}
+.zone{font-family:var(--font-mono);font-size:11.5px;color:var(--ink2)}
+.card a{color:var(--accent);text-underline-offset:2px}
+.src li{font-size:12.5px}
+aside{min-width:0;overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px 14px 18px}
+aside h2{margin:0 0 6px;font-family:var(--font-display);font-size:17px;font-weight:700}
+aside h3{margin:16px 0 6px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2);font-weight:500}
+.score{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:4px}
+.score b{font-family:var(--font-display);font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
+.score span{color:var(--ink2);font-size:12.5px}
+.chk{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.chk button{width:100%;display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:8px;align-items:center;text-align:left;border:0;background:transparent;border-radius:6px;padding:5px 6px}
+.chk button:hover,.chk button[aria-pressed="true"]{background:var(--accent-soft)}
+.chk .tick{width:16px;height:16px;border-radius:50%;background:var(--good);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:700}
+.chk .tick.p{background:var(--warn)}
+.chk .tick.c{background:var(--bad)}
+.chk .z{font-family:var(--font-mono);font-size:10.5px;color:var(--ink2)}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.legend span{display:flex;align-items:center;gap:7px;font-size:12.5px}
+.legend i{width:14px;height:14px;border-radius:3px;border:1px solid var(--line);flex:none}
+aside ul.plain{margin:0;padding-left:18px}
+aside ul.plain li{margin:3px 0;font-size:12.5px}
+aside .note{font-size:12px;color:var(--ink2);margin:6px 0 0}
+aside a{color:var(--accent);text-underline-offset:2px}
+.fallback{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;max-width:80%;text-align:center;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+@media (max-width:900px){
+  html,body{height:auto}
+  main{grid-template-columns:minmax(0,1fr)}
+  .stage{height:72vh;min-height:440px}
+  aside{overflow:visible}
+  .hint{max-width:calc(100% - 140px)}
+  .card{left:8px;right:8px;bottom:8px;width:auto;max-height:62%}
+  h1{font-size:23px}
+}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="ttl">
+    <h1>Vastu Home Plan</h1>
+    <p class="sub">SE-facing · road in front · ground + first floor · 24′7″ × 34′5″ · 846 sq ft per floor</p>
+  </div>
+  <div class="ctl">
+    <div class="seg" role="group" aria-label="View mode">
+      <button id="v3" aria-pressed="true">3D</button><button id="v2" aria-pressed="false">2D plan</button>
+    </div>
+    <div class="seg" role="group" aria-label="Floor">
+      <button data-f="both" aria-pressed="true">Both</button><button data-f="g" aria-pressed="false">Ground</button><button data-f="f" aria-pressed="false">First</button>
+    </div>
+    <div class="tg" role="group" aria-label="Layers">
+      <button id="t-zones" aria-pressed="false">Vastu zones</button>
+      <button id="t-labels" aria-pressed="true">Labels</button>
+      <button id="t-roof" aria-pressed="false" data-3d>Roof</button>
+      <button id="t-explode" aria-pressed="true" data-3d>Explode</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="stage" id="stage" aria-label="House model">
+    <canvas id="c3" aria-label="3D model of the house. Drag to rotate, scroll to zoom."></canvas>
+    <svg id="s2" hidden role="img" aria-label="2D floor plan"></svg>
+    <div id="chips"></div>
+    <div class="hint" id="hint">Drag to orbit · scroll to zoom</div>
+    <div class="stagebar" id="stagebar"><button id="b-home">Reset view</button><button id="b-top">Top view</button></div>
+    <div class="compass" id="compass" aria-hidden="true"><i id="needle"></i></div>
+    <div class="facing" id="facing">Road in front (south) · enter through the parking porch</div>
+    <div class="card" id="card" hidden role="dialog" aria-label="Vastu note"></div>
+  </section>
+
+  <aside id="panel" aria-label="Vastu checklist">
+    <h2>Vastu check</h2>
+    <div class="score"><b id="score">–</b><span id="scoreTxt"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <h3>Ground floor</h3><ul class="chk" id="list-g"></ul>
+    <h3>First floor</h3><ul class="chk" id="list-f"></ul>
+    <h3>Roof</h3><ul class="chk" id="list-r"></ul>
+    <h3>Room colours</h3>
+    <div class="legend" id="legend"></div>
+    <h3>Assumptions</h3>
+    <ul class="plain">
+      <li>Plot 24′7″ wide × 34′5″ deep, about 846 sq ft per floor. The single road runs along the front, taken as the south side.</li>
+      <li>Ground floor: you enter through the parking porch (SW) into the hall. Kitchen 8′ × 12′ in the SE, bedroom 12′ × 12′ on the west, pooja in the NE, both washrooms in the NW.</li>
+      <li>First floor: no kitchen. Lounge (11′ × 10.4′, east) opens straight onto the 8′ × 8′ road-side terrace. Bedrooms 11′ × 13′ (master, SW), 11′ × 12.5′ (west) and 11′ × 12′ (east, next to the utility), 2 washrooms, a 5′ × 4′ utility and a 6′ × 4′ open patch in the north-east.</li>
+      <li>Where Vastu sources disagree or this plan compromises (marked "permitted"): main door via the porch, parking in the SW, terrace on the south side.</li>
+      <li>Compact dog-leg stair, 5.6′ × 8.5′: 17 risers, about 7″ rise and 9″ tread, 2′9″ flights. Confirm with your structural engineer.</li>
+      <li>Setbacks, structure and local bylaws are not drawn. This is a concept plan, not a sanctioned drawing.</li>
+    </ul>
+    <h3>Sources</h3>
+    <ul class="plain" id="srcs"></ul>
+    <p class="note">Schools of Vastu differ in detail. Have your Vastu consultant confirm before you finalise.</p>
+  </aside>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+'use strict';
+/* ---------- constants (feet) ---------- */
+var W=24.6, D=34.4, HT=10, EXT=0.75, INT=0.4, GAP=9, RH=HT/17;
+var $=function(id){return document.getElementById(id)};
+var fmt=function(n){return parseFloat(n.toFixed(2))+'′'};
+
+/* ---------- rooms ---------- */
+var ROOMS={
+ g:[
+  {id:'hall',type:'living',r:[12,0,24.6,22.4],x:[[10,0,12,4.4],[11,16.4,12,22.4],[11,22.4,16.6,25.9]]},
+  {id:'pooja',type:'pooja',r:[18.6,0,24.6,6]},
+  {id:'bath-g',type:'wet',r:[0,0,6,4.4]},
+  {id:'wc-g',type:'wet',r:[6,0,10,4.4]},
+  {id:'bed-g',type:'bed',r:[0,4.4,12,16.4]},
+  {id:'garage',type:'garage',r:[0,16.4,11,34.4]},
+  {id:'stair-g',type:'stair',r:[11,25.9,16.6,34.4]},
+  {id:'kitchen-g',type:'kitchen',r:[16.6,22.4,24.6,34.4]}
+ ],
+ f:[
+  {id:'lounge',type:'living',r:[13.6,16,24.6,26.4],x:[[11,0,13.6,26.65],[6,0,11,5],[5.6,17.5,11,21.4],[13.6,26.4,16.6,26.65]]},
+  {id:'utility',type:'wet',r:[13.6,0,18.6,4]},
+  {id:'nedeck',type:'terrace',r:[18.6,0,24.6,4]},
+  {id:'bath-f',type:'wet',r:[0,0,6,5]},
+  {id:'br2',type:'bed',r:[0,5,11,17.5]},
+  {id:'mbath-f',type:'wet',r:[0,17.5,5.6,21.4]},
+  {id:'master',type:'bed',r:[0,21.4,11,34.4]},
+  {id:'br3',type:'bed',r:[13.6,4,24.6,16]},
+  {id:'stair-f',type:'stair',r:[11,26.65,16.6,34.4],hole:true},
+  {id:'terrace',type:'terrace',r:[16.6,26.4,24.6,34.4]}
+ ]};
+var ROOM={}; ['g','f'].forEach(function(k){ROOMS[k].forEach(function(r){ROOM[r.id]=r})});
+var SLABS=[[0,0,24.6,26.65],[0,26.65,11,34.4],[16.6,26.65,24.6,34.4]];
+
+/* ---------- walls & openings ---------- */
+var Wn=function(a,b,s,h){return {a:a,b:b,k:'win',sill:s==null?3:s,head:h==null?7:h}};
+var Dr=function(a,b,sw){return {a:a,b:b,k:'door',sill:0,head:7,sw:sw||1}};
+var Mn=function(a,b,sw){return {a:a,b:b,k:'main',sill:0,head:7.2,sw:sw||1}};
+var Ar=function(a,b){return {a:a,b:b,k:'arch',sill:0,head:7.5}};
+var Gt=function(a,b){return {a:a,b:b,k:'gate',sill:0,head:7.8}};
+var Gl=function(a,b){return {a:a,b:b,k:'glass',sill:0,head:8}};
+var Hw=function(z,x1,x2,o){o=o||{};return {x1:x1,z1:z,x2:x2,z2:z,ext:o.ext,low:o.low,rail:o.rail,open:o.open||[]}};
+var Vw=function(x,z1,z2,o){o=o||{};return {x1:x,z1:z1,x2:x,z2:z2,ext:o.ext,low:o.low,rail:o.rail,open:o.open||[]}};
+var WALLS={
+ g:[
+  Hw(0,0,24.6,{ext:1,open:[Wn(2,4.2,5,7),Wn(7,9,5,7),Wn(13,17),Wn(20.4,22.8)]}),
+  Vw(24.6,0,34.4,{ext:1,open:[Wn(8,12),Wn(14,18),Wn(25,29)]}),
+  Hw(34.4,0,24.6,{ext:1,open:[Gt(0.6,10.4),Wn(12.6,15,4,8),Wn(19,22.5)]}),
+  Vw(0,0,34.4,{ext:1,open:[Wn(13.4,15.4),Wn(24,27,5,7.5)]}),
+  Hw(4.4,0,12,{open:[Dr(1.6,4,1)]}),
+  Vw(6,0,4.4),
+  Vw(10,0,4.4,{open:[Dr(1,3.4,-1)]}),
+  Vw(12,4.4,16.4,{open:[Dr(12.6,15.2,-1)]}),
+  Hw(16.4,0,12),
+  Vw(11,16.4,34.4,{open:[Mn(17.4,20.8,1)]}),
+  Hw(25.9,11,13.8),
+  Hw(22.4,16.6,24.6,{open:[Ar(17.4,20.6)]}),
+  Vw(16.6,22.4,34.4),
+  Vw(18.6,0,6,{open:[Dr(1.7,4.3,1)]}),
+  Hw(6,18.6,24.6)
+ ],
+ f:[
+  Hw(0,0,18.6,{ext:1,open:[Wn(2,4.2,5,7),Wn(7.4,10),Wn(11.6,13.2),Wn(14.6,17.6,4,7)]}),
+  Hw(0,18.6,24.6,{ext:1,low:3}),
+  Vw(24.6,0,4,{ext:1,low:3}),
+  Vw(24.6,4,26.4,{ext:1,open:[Wn(5.5,10.5),Wn(12,14.5),Wn(18,23)]}),
+  Vw(24.6,26.4,34.4,{ext:1,low:3.5}),
+  Hw(34.4,0,16.6,{ext:1,open:[Wn(3,7.5),Wn(12.6,15,4,8)]}),
+  Hw(34.4,16.6,24.6,{ext:1,low:3.5}),
+  Vw(0,0,34.4,{ext:1,open:[Wn(1.5,3.5,6.5,8.5),Wn(13.6,15.6),Wn(18.6,20.4,6.5,8.5),Wn(28,31)]}),
+  Vw(6,0,5,{open:[Dr(1.2,3.6,-1)]}),
+  Hw(5,0,11),
+  Vw(11,5,17.5,{open:[Dr(12,14.6,-1)]}),
+  Hw(17.5,0,11),
+  Vw(5.6,17.5,21.4),
+  Hw(21.4,0,11,{open:[Dr(1,3.4,1),Dr(6.6,9.2,1)]}),
+  Vw(11,21.4,34.4),
+  Vw(13.6,0,4,{open:[Dr(0.8,3.2,1)]}),
+  Hw(4,13.6,18.6),
+  Vw(18.6,0,4,{open:[Dr(0.8,3.2,1)]}),
+  Hw(4,18.6,24.6,{open:[Wn(19.6,23.6)]}),
+  Vw(13.6,4,16),
+  Hw(16,13.6,24.6,{open:[Dr(15,17.6,-1)]}),
+  Hw(26.4,16.6,24.6,{open:[Gl(18,22.8)]}),
+  Vw(16.6,26.4,34.4),
+  Hw(26.65,13.8,16.6,{rail:3})
+ ]};
+
+/* ---------- furniture (x1,z1,x2,z2,height,kind) ---------- */
+var FK={bed:'#7C93B0',pillow:'#F1F3F4',sofa:'#5F7F8F',table:'#B08A5B',counter:'#C4CBD0',hob:'#2B2F33',sink:'#E4EBEE',
+  fridge:'#D6DDE1',wardrobe:'#9B7B5B',fixture:'#F4F6F7',planter:'#4F8A4B',rug:'#B46A55',unit:'#6B5545',stool:'#8B6B4A',chair:'#8B6B4A',
+  car:'#39485A',cabin:'#5C7088',mandir:'#D98A2B',bar:'#4B3A2E',coffee:'#C9372C',washer:'#E9EEF1',rack:'#9AA5AD'};
+function F(f,x1,z1,x2,z2,h,k){return {f:f,x1:x1,z1:z1,x2:x2,z2:z2,h:h,k:k}}
+var FURN=[
+ /* ground */
+ F('g',12.6,3.4,18.4,7.4,0.04,'rug'), F('g',12.4,8.2,18.6,10.2,2.5,'sofa'), F('g',14.3,4.4,16.7,6.4,1.3,'table'), F('g',13,0.4,18,1.4,1.8,'unit'),
+ F('g',19.4,9.4,23.4,12.4,2.4,'table'), F('g',18.6,9.8,19.3,12,1.5,'chair'), F('g',23.5,9.8,24.2,12,1.5,'chair'), F('g',19.8,8.7,23,9.3,1.5,'chair'), F('g',19.8,12.5,23,13.1,1.5,'chair'),
+ F('g',23.2,1.2,24.4,4.8,3.4,'mandir'), F('g',20.2,2.2,21.6,3.6,0.6,'stool'),
+ F('g',0.4,7.5,6.9,12.5,1.5,'bed'), F('g',0.5,8,1.7,9.7,1.9,'pillow'), F('g',0.5,10.3,1.7,12,1.9,'pillow'),
+ F('g',0.4,5.8,1.8,7.2,1.5,'table'), F('g',0.4,12.8,1.8,14.2,1.5,'table'), F('g',9.8,4.8,11.6,9.6,7,'wardrobe'),
+ F('g',0.4,0.4,2.2,2.2,1.4,'fixture'), F('g',4,0.4,5.4,1.6,2.8,'fixture'),
+ F('g',6.4,0.4,8.2,2.2,1.4,'fixture'), F('g',8.6,0.4,9.6,1.6,2.8,'fixture'),
+ F('g',22.6,23,24.6,26.5,3,'sink'), F('g',22.6,26.5,24.6,29.5,3,'counter'), F('g',22.6,29.5,24.6,33,3,'hob'), F('g',19,32.6,22.6,34.2,3,'counter'), F('g',16.9,32.2,18.8,34.2,5.8,'fridge'),
+ F('g',2.2,17.6,8.7,33.8,2.7,'car'), F('g',2.8,21.4,8.1,28.6,4.9,'cabin'),
+ /* first */
+ F('f',19,19,22.5,20.5,3.4,'bar'), F('f',19.3,19.3,20.1,20.1,4.4,'coffee'),
+ F('f',14,0.4,16.2,2.6,2.8,'washer'), F('f',16.6,0.6,18.2,3.4,4,'rack'),
+ F('f',0.4,8.5,6.9,13.5,1.5,'bed'), F('f',0.5,9,1.7,10.7,1.9,'pillow'), F('f',0.5,11.3,1.7,13,1.9,'pillow'), F('f',8.8,5.4,10.6,9.6,7,'wardrobe'),
+ F('f',3,27.8,8,34.2,1.5,'bed'), F('f',3.5,32.8,5.3,33.9,1.9,'pillow'), F('f',5.7,32.8,7.5,33.9,1.9,'pillow'), F('f',8.8,22,10.6,26.5,7,'wardrobe'),
+ F('f',17.6,6.5,24.2,11.5,1.5,'bed'), F('f',22.9,7,24.1,8.7,1.9,'pillow'), F('f',22.9,9.3,24.1,11,1.9,'pillow'), F('f',13.9,5,15.7,10,7,'wardrobe'),
+ F('f',0.4,0.4,2.2,2.2,1.4,'fixture'), F('f',4,0.4,5.4,1.6,2.8,'fixture'),
+ F('f',0.4,17.9,2.2,19.7,1.4,'fixture'), F('f',3.8,17.9,5.2,19.1,2.8,'fixture'),
+ F('f',16.9,27.5,18.6,33.6,1.5,'sofa'), F('f',18.6,32,22,33.7,1.5,'sofa'), F('f',19.6,28.6,21.8,30.8,1.8,'table'), F('f',23,27,24,33.5,1.2,'planter')
+];
+
+/* ---------- Vastu items ---------- */
+var S={
+ bs:{t:'Varahamihira, Brihat Samhita, ch. 53 (Vastu Vidya)'},
+ may:{t:'Mayamatam (treatise on dwellings)'},
+ man:{t:'Manasara (Shilpa Shastra)'},
+ vp:{t:'Vishwakarma Prakash'},
+ mat:{t:'Matsya Purana, Vastu chapters (overview on WisdomLib)',u:'https://www.wisdomlib.org/hinduism/essay/architectural-data-in-the-puranas/d/doc1460130.html'},
+ rust:{t:'Rustomjee, Vastu for homes (modern summary)',u:'https://www.rustomjee.com/blog/vastu-for-homes'},
+ hg:{t:'HouseGyan, house design as per Vastu (modern summary)',u:'https://www.housegyan.com/vastu-shastra/home-vastu/how-to-design-your-house-as-per-vastu-shastra'},
+ bnb:{t:'Brick&Bolt, essential Vastu principles (modern summary)',u:'https://www.bricknbolt.com/blogs-and-articles/home-design-guide/essential-vastu-principles-for-home'},
+ hsg:{t:'Housing.com, Vastu for car garage and parking',u:'https://housing.com/news/vastu-for-car-garage-and-parking'},
+ dc:{t:'Design Cafe, south-facing house Vastu plan',u:'https://www.designcafe.com/blog/home-interiors/south-facing-house-vastu-plan-30x40/'}
+};
+var ITEMS=[
+ {id:'entrance',f:'g',name:'Main door (from the parking porch)',chip:'Main door',pos:[11,19.1,3.6],rect:[10.4,17.4,11.6,20.8],hl:'door',zone:'Porch → hall · door faces east',grade:'Permitted',
+  why:'You asked for the hall to open off the parking, so the parking doubles as the entrance porch: you come in through the road gate and step into the hall through a 3.4′ door in the porch’s east wall. That door faces east, the most favoured facing for a main door. The trade-off: the 32-pada scheme prefers the entry on the front wall 6′–12′ from the east corner, and that stretch is now the staircase, so check this with your Vastu consultant.',
+  tips:['Door opens inward into the hall, clockwise from the hinge side.','Make it the largest and best-lit door in the house.','Light the porch well; keep it clean and uncluttered.'],
+  src:['bs','may','dc']},
+ {id:'garage',f:'g',room:'garage',name:'Parking + entrance porch',chip:'Parking',zone:'South-west · Nairuti',grade:'Permitted',
+  why:'The parking stays in the south-west, the front corner the road can reach once the kitchen takes the south-east. Sources differ: Housing.com lists the south-west as good for large cars, while Design Cafe prefers the north-west or west. The bay is now 11′ wide (about 10.4′ clear) × 18′ deep, so a full-size SUV fits with room to open the doors and walk to the main door.',
+  tips:['9.8′ rolling-shutter gate on the road; keep it shut when not in use, since the SW should stay closed and heavy.','Park nose-in, facing north; avoid parking facing south.','Main door into the hall is on the porch’s east wall.'],
+  src:['hsg','dc','rust']},
+ {id:'kitchen-g',f:'g',room:'kitchen-g',name:'Kitchen',chip:'Kitchen',zone:'South-east · Agni (fire)',grade:'Ideal',
+  why:'Agni, the fire element, rules the south-east corner, so the kitchen takes the SE corner, now 8′ wide. The hob is at the SE end of the east counter and the cook faces east. The sink is at the NE end of the same counter, so fire and water stay apart. The fridge sits in the SW corner of the kitchen.',
+  tips:['Cook faces east (drawn).','Sink in the north-east, hob in the south-east of the kitchen.','Exhaust on the east or south wall.'],
+  src:['bs','mat','dc']},
+ {id:'bed-g',f:'g',room:'bed-g',name:'Bedroom (ground floor)',chip:'Bedroom',zone:'West · North-west',grade:'Permitted',
+  why:'With the parking in the SW corner, the 12′ × 12′ bedroom sits on the west side, which the texts accept for bedrooms. It stays out of the NE and SE. The bed head is on the west wall (head to west is one of the two preferred orientations), and the attached washroom is in the NW corner beside it.',
+  tips:['Head to west (drawn) or south.','No mirror facing the bed.','Keep the corner nearest the centre of the plot free of a column.'],
+  src:['bs','vp','hg']},
+ {id:'hall',f:'g',room:'hall',name:'Hall (living + dining)',chip:'Hall',zone:'North · North-east · East',grade:'Ideal',
+  why:'The living area belongs in the north and east, where Kubera (north) and Indra (east) are said to favour openness and social life. The hall fills that side of the plot, opens straight off the parking porch, and leads south to the kitchen and stairs. Its biggest windows face north and east, and seating is in the north half so the centre stays empty.',
+  tips:['Largest windows on the N and E walls (drawn).','Dining table on the east side, near the kitchen.','Heavy cupboards, if added later, go on the south or west wall.'],
+  src:['bs','vp','hg']},
+ {id:'center',f:'g',name:'Brahmasthan (centre of plot)',chip:'Centre',pos:[12.3,17.2,0.2],rect:[11.5,16.5,14,19],hl:'floor',zone:'Centre · Brahmasthan',grade:'Ideal',
+  why:'The centre of the plot belongs to Brahma in the Vastu Purusha Mandala and is kept open and light. No pillar, staircase, toilet, car or heavy furniture sits on the point (12.3′, 17.2′). It falls inside the hall on the ground floor and inside the family lounge above.',
+  tips:['Keep the floor here free of fixed furniture.','Ask your engineer to avoid a column on this point.'],
+  src:['bs','man','bnb']},
+ {id:'pooja',f:'g',room:'pooja',name:'Pooja room',chip:'Pooja',zone:'North-east · Ishanya',grade:'Ideal',
+  why:'The north-east is the most sacred zone, ruled by Ishanya. The pooja room is in the NE corner with its door on the hall side. The mandir stands on the east wall facing west, so you pray facing east. There is no toilet or staircase next to it or above it; most of it is under the open north-east patch upstairs.',
+  tips:['Worshipper faces east (drawn).','Window on the north wall for morning light.','Keep it free of storage and clutter.'],
+  src:['bs','vp','hg']},
+ {id:'bath-g',f:'g',room:'bath-g',name:'Attached washroom',chip:'Bath',zone:'North-west · Vayu (air)',grade:'Ideal',
+  why:'North-west is ruled by Vayu, the air element, and is the preferred corner for toilets because ventilation carries odours out. The attached washroom sits in the NW corner, north of the bedroom, and opens into it.',
+  tips:['WC seat faces north or south.','High window on the north wall (drawn).'],
+  src:['vp','rust','bnb']},
+ {id:'wc-g',f:'g',room:'wc-g',name:'Common washroom',chip:'WC',zone:'North-west · Vayu (air)',grade:'Ideal',
+  why:'The common washroom sits beside the attached one in the north-west, so plumbing runs together. Its door opens to the hall, away from the kitchen and the pooja room, and it keeps out of the NE and the centre.',
+  tips:['WC seat faces north or south.','Exhaust fan on the north wall.'],
+  src:['vp','hg','bnb']},
+ {id:'stair-g',f:'g',room:'stair-g',name:'Staircase (compact)',chip:'Stairs',zone:'South · clockwise ascent',grade:'Ideal',
+  why:'Stairs are heavy, so the texts place them in the south, west or south-west and never in the north-east, centre or south-east. The stair is now shorter: 5.6′ × 8.5′ instead of 6′ × 12′, on the south side between the parking and the kitchen. You climb clockwise (down the east side, turn at the south landing, back up the west side) on 17 risers, an odd number.',
+  tips:['Clockwise ascent (drawn).','Odd number of risers: 17.','Flights are 2′9″ wide; confirm with your engineer.'],
+  src:['bs','man','rust']},
+ {id:'lounge',f:'f',room:'lounge',name:'Family lounge',chip:'Lounge',zone:'East \u00b7 Centre',grade:'Ideal',
+  why:'The lounge stays, shrunk to 11\u2032 \u00d7 10.4\u2032 plus the central passage, and sits right beside the road-side terrace, with a glass door straight onto it. The passage through the centre keeps the Brahmasthan open. As asked, it holds only the coffee/bar table.',
+  tips:['Only a coffee/bar table (drawn).','Terrace door on the south side of the lounge.'],
+  src:['bs','vp','hg']},
+ {id:'nedeck',f:'f',room:'nedeck',name:'Open north-east patch (6\u2032 \u00d7 4\u2032)',chip:'NE',zone:'North-east \u00b7 Ishanya',grade:'Ideal',
+  why:'As you asked, a 6\u2032 \u00d7 4\u2032 patch in the north-east corner is left open to the sky. The texts want the north-east to be the lightest, most open part of the house, and this keeps that corner empty above the pooja room. It has a low 3\u2032 parapet on the north and east, a door from the utility, and a window from Bedroom 3.',
+  tips:['Keep it empty or with a small tulsi plant; no storage, tank or heavy pots.','Do not roof it over later.'],
+  src:['bs','mat','hg']},
+ {id:'utility',f:'f',room:'utility',name:'Utility (washing machine + drying)',chip:'Utility',zone:'North',grade:'Permitted',
+  why:'A 5\u2032 \u00d7 4\u2032 utility for the washing machine and a drying rack sits on the north side, next to Bedroom 3 and the open north-east patch, which it opens onto. It is a water use in the north, which the texts associate with water, and it stays out of the NE corner itself. The preferred spots for a washing machine are the north-west or south-east, so this is marked permitted.',
+  tips:['Washing machine on the north wall (drawn).','Drain into the bathroom stack on the north-west if possible.','Dry clothes here or on the road-side terrace, not on the NE patch.'],
+  src:['vp','rust','bnb']},
+ {id:'terrace',f:'f',room:'terrace',name:'Terrace with sit-out (road side)',chip:'Terrace',zone:'South-east · road side',grade:'Permitted',
+  why:'You wanted the terrace towards the road, so it is an 8′ × 8′ sit-out in the south-east corner, opening off the lounge. Vastu prefers open terraces in the north and east, so a south-side terrace is a compromise. It is kept out of the south-west, which must stay closed, and its parapet is raised to 3.5′ on the south and east, as the texts want the south side higher.',
+  tips:['3.5′ parapet on the S and E (drawn).','A pergola or a light roof over it softens the south opening.','Seating along the west side, facing the road and the morning sun.'],
+  src:['bs','hg','bnb']},
+ {id:'master',f:'f',room:'master',name:'Master bedroom',chip:'Master bed',zone:'South-west · Nairuti (earth)',grade:'Ideal',
+  why:'The master takes the south-west corner, the heaviest and steadiest zone, above the parking. It is 11′ × 13′ with its own attached washroom to the north-west. The bed head is to the south.',
+  tips:['Head to south (drawn) or west.','Attached washroom on the north side of the room.'],
+  src:['bs','vp','dc']},
+ {id:'br2',f:'f',room:'br2',name:'Bedroom 2',chip:'Bedroom 2',zone:'West · North-west',grade:'Ideal',
+  why:'The north-west and west suit a guest or children’s room, because Vayu stands for movement. It is 11′ × 12.5′, with the bed head on the west wall and a west window.',
+  tips:['Head to west (drawn).','Door opens to the lounge on the east.'],
+  src:['vp','rust','bnb']},
+ {id:'br3',f:'f',room:'br3',name:'Bedroom 3',chip:'Bedroom 3',zone:'East \u00b7 North-east side',grade:'Permitted',
+  why:'Bedroom 3 is 11\u2032 \u00d7 12\u2032 on the east side, directly south of the utility, with its door onto the lounge. Its northern part reaches into the north-east zone, which the texts prefer to keep light, but the north-east corner itself is left open as the 6\u2032 \u00d7 4\u2032 patch. East-side bedrooms are accepted for children or young members, so this is marked permitted; mention it to your Vastu consultant.',
+  tips:['Bed head to the east (drawn) or south.','Light colours; keep heavy furniture off the north-east wall.'],
+  src:['vp','hg','bnb']},
+ {id:'bath-f',f:'f',room:'bath-f',name:'Common washroom (first floor)',chip:'Bath',zone:'North-west · Vayu (air)',grade:'Ideal',
+  why:'The common washroom sits in the north-west corner, directly above the ground-floor washroom so plumbing stacks. It opens off a short passage from the lounge and keeps out of the NE, SW and centre.',
+  tips:['WC seat faces north or south.','Exhaust on the north or west wall.'],
+  src:['vp','rust','bnb']},
+ {id:'mbath-f',f:'f',room:'mbath-f',name:'Master attached washroom',chip:'Bath',zone:'West · Varuna',grade:'Permitted',
+  why:'The master bedroom’s washroom sits on the west wall, north of the bedroom, so it stays out of the south-west corner itself. West is an accepted zone for toilets.',
+  tips:['WC seat faces north or south.','Ventilator on the west wall (drawn).'],
+  src:['vp','rust','bnb']},
+ {id:'stair-f',f:'f',room:'stair-f',name:'Staircase (upper flight)',chip:'Stairs',zone:'South · clockwise ascent',grade:'Ideal',
+  why:'The second flight climbs north up the west side of the stairwell and lands in the lounge. Together the two flights turn clockwise, and the stairwell stays on the south side, a permitted zone for stairs.',
+  tips:['Railing on the open side of the stairwell.','Landing opens north into the lounge.'],
+  src:['bs','man','rust']},
+ {id:'tank',f:'r',name:'Overhead water tank',chip:'Tank',pos:[3.2,30.5,14.6],rect:[1.7,29,4.7,32],hl:'roof',zone:'South-west roof · Nairuti',grade:'Ideal',
+  why:'An overhead tank is a heavy load, so it goes on the roof in the south-west or west. The ground-level water source (underground tank or borewell, not drawn) would go in the north-east of the plot.',
+  tips:['Tank sits above the master bedroom corner.','Underground sump or borewell in the NE at plot level.'],
+  src:['vp','rust','bnb']}
+];
+var ITEM={}; ITEMS.forEach(function(it){
+  ITEM[it.id]=it;
+  if(it.room){var rm=ROOM[it.room],r=rm.r;it.rect=r;it.pos=[(r[0]+r[2])/2,(r[1]+r[3])/2,0.3];it.hl='room';
+    if(!rm.x&&(r[2]-r[0])*(r[3]-r[1])>=70) it.dims=fmt(r[2]-r[0])+' × '+fmt(r[3]-r[1]);}
+});
+var ANCH={hall:[17,14],'kitchen-g':[20.6,27.5],'bed-g':[5,14.6],'bath-g':[3,2.6],'wc-g':[8,2.6],'stair-g':[13.8,30.5],garage:[5.5,25.4],pooja:[21.6,3],
+  lounge:[19,22.6],master:[5.5,25],br3:[19,13.4],utility:[15.6,2.2],nedeck:[22.4,2.2],br2:[5.5,15.2],terrace:[20.6,31],'stair-f':[13.8,30.5],'bath-f':[3,2.6],'mbath-f':[2.8,19.6]};
+Object.keys(ANCH).forEach(function(k){ITEM[k].pos=[ANCH[k][0],ANCH[k][1],0.3]});
+
+var TYPE_NAMES={living:'Living',bed:'Bedroom',kitchen:'Kitchen',wet:'Washroom',stair:'Stairs',terrace:'Terrace',garage:'Parking',pooja:'Pooja'};
+
+/* ---------- state ---------- */
+var state={view:'3d',floor:'both',zones:false,labels:window.innerWidth>=720,roof:false,explode:true,sel:null};
+var HASHF={both:'both',g:'ground',f:'first'};
+function parseHash(){
+  var h=(location.hash||'').replace('#','');
+  var m=/^(3d|2d)-(both|ground|first)$/.exec(h); if(!m) return false;
+  state.view=m[1]; state.floor=m[2]==='ground'?'g':m[2]==='first'?'f':'both';
+  if(state.view==='2d'&&state.floor==='both') state.floor='g';
+  return true;
+}
+function writeHash(){
+  try{var n=state.view+'-'+HASHF[state.floor]; if(location.hash!=='#'+n) location.hash=n;}catch(e){}
+}
+
+/* ---------- tokens ---------- */
+function tok(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
+
+/* ============================================================
+   3D
+   ============================================================ */
+var T=window.THREE, has3d=false;
+var renderer,scene,camera,controls,gG,fG,rG,podium,zonesG=[],M={},hlObj=null,siteObjs=[];
+var camGoal=null, tgtGoal=null, exOff=GAP, exGoal=GAP;
+var stage=$('stage'), canvas=$('c3');
+
+function mk(g,x1,z1,x2,z2,y1,y2,mat,shadow){
+  var w=x2-x1,d=z2-z1,h=y2-y1; if(w<1e-4||d<1e-4||h<1e-4) return null;
+  var m=new T.Mesh(new T.BoxGeometry(w,h,d),mat);
+  m.position.set((x1+x2)/2-W/2,(y1+y2)/2,(z1+z2)/2-D/2);
+  if(shadow!==false){m.castShadow=true;m.receiveShadow=true;}
+  g.add(m); return m;
+}
+function initMaterials(){
+  var L=function(c){return new T.MeshLambertMaterial({color:c})};
+  M.wallExt=new T.MeshStandardMaterial({color:'#fff',roughness:.92,metalness:0});
+  M.wallInt=new T.MeshStandardMaterial({color:'#fff',roughness:.92,metalness:0});
+  M.slab=new T.MeshStandardMaterial({color:'#aaa',roughness:.95});
+  M.stairs=new T.MeshStandardMaterial({color:'#bbb',roughness:.9});
+  M.ground=new T.MeshLambertMaterial({color:'#ccc'});
+  M.road=new T.MeshLambertMaterial({color:'#666'});
+  M.floor={}; ['living','bed','kitchen','wet','stair','terrace','garage','pooja'].forEach(function(k){M.floor[k]=new T.MeshLambertMaterial({color:'#ddd'})});
+  M.glass=new T.MeshStandardMaterial({color:'#9ED0E8',transparent:true,opacity:.32,roughness:.1,metalness:.2,depthWrite:false});
+  M.rail=new T.MeshStandardMaterial({color:'#B8DCEB',transparent:true,opacity:.35,roughness:.1,depthWrite:false});
+  M.door=L('#8A5A3C'); M.main=L('#5B3A26'); M.frame=L('#7b8a93');
+  M.f={}; Object.keys(FK).forEach(function(k){M.f[k]=L(FK[k])});
+  M.tank=L('#5E86A6');
+  M.hlLine=new T.LineBasicMaterial({color:'#0A7B74'});
+  M.hlFill=new T.MeshBasicMaterial({color:'#0A7B74',transparent:true,opacity:.28,depthWrite:false});
+  M.podium=new T.MeshBasicMaterial({color:'#7e929d',transparent:true,opacity:.12,depthWrite:false});
+}
+function applyTheme(){
+  if(!has3d) return; dirty=true;
+  scene.background=new T.Color(tok('--sc-bg'));
+  M.wallExt.color.set(tok('--sc-wall')); M.wallInt.color.set(tok('--sc-wall-in'));
+  M.slab.color.set(tok('--sc-slab')); M.stairs.color.set(tok('--sc-stair'));
+  M.ground.color.set(tok('--sc-ground')); M.road.color.set(tok('--sc-road'));
+  Object.keys(M.floor).forEach(function(k){M.floor[k].color.set(tok('--f-'+k))});
+  M.hlLine.color.set(tok('--accent')); M.hlFill.color.set(tok('--accent'));
+}
+function labelPlane(text,w,h,rot){
+  var c=document.createElement('canvas'); c.width=512; c.height=Math.round(512*h/w);
+  var x=c.getContext('2d'); x.fillStyle='rgba(255,255,255,.85)'; x.font='600 '+Math.round(c.height*.5)+'px Arial, sans-serif';
+  x.textAlign='center'; x.textBaseline='middle'; x.fillText(text,c.width/2,c.height/2);
+  var t=new T.CanvasTexture(c); var m=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:t,transparent:true,depthWrite:false}));
+  m.rotation.x=-Math.PI/2; m.rotation.z=rot||0; return m;
+}
+function zoneTexture(){
+  var c=document.createElement('canvas'); c.width=500; c.height=680; var x=c.getContext('2d');
+  var cells=[['NW','Vayu · air','#9aa7b0'],['N','Kubera','#6aa0d8'],['NE','Ishanya · water','#3b8fe0'],
+             ['W','Varuna','#8aa8c0'],['CENTRE','Brahmasthan','#e0b64a'],['E','Indra · sun','#f0a640'],
+             ['SW','Nairuti · earth','#b98b5a'],['S','Yama','#c9786a'],['SE','Agni · fire','#e0603a']];
+  var cw=c.width/3, ch=c.height/3;
+  cells.forEach(function(cl,i){
+    var cx=(i%3)*cw, cy=Math.floor(i/3)*ch;
+    x.fillStyle=cl[2]; x.globalAlpha=.42; x.fillRect(cx,cy,cw,ch); x.globalAlpha=1;
+    x.strokeStyle='rgba(255,255,255,.85)'; x.setLineDash([10,8]); x.lineWidth=3; x.strokeRect(cx+1.5,cy+1.5,cw-3,ch-3);
+    x.setLineDash([]); x.textAlign='center'; x.fillStyle='#fff'; x.shadowColor='rgba(0,0,0,.6)'; x.shadowBlur=6;
+    x.font='700 44px Arial, sans-serif'; x.fillText(cl[0],cx+cw/2,cy+ch/2-4);
+    x.font='500 26px Arial, sans-serif'; x.fillText(cl[1],cx+cw/2,cy+ch/2+34); x.shadowBlur=0;
+  });
+  return new T.CanvasTexture(c);
+}
+function buildWall(g,w){
+  var horiz=w.z1===w.z2, t=w.rail?0.15:(w.ext?EXT:INT);
+  var lo=horiz?Math.min(w.x1,w.x2):Math.min(w.z1,w.z2), hi=horiz?Math.max(w.x1,w.x2):Math.max(w.z1,w.z2);
+  var fx=horiz?w.z1:w.x1, ext=(horiz&&w.ext)?EXT/2:0;
+  var hf=w.low||w.rail||HT, mat=w.rail?M.rail:(w.ext?M.wallExt:M.wallInt);
+  function seg(a,b,y0,y1,m){
+    if(b-a<1e-3||y1-y0<1e-3) return;
+    if(horiz) mk(g,a,fx-t/2,b,fx+t/2,y0,y1,m||mat); else mk(g,fx-t/2,a,fx+t/2,b,y0,y1,m||mat);
+  }
+  var opens=w.open.slice().sort(function(p,q){return p.a-q.a});
+  var cur=lo-ext;
+  opens.forEach(function(o){
+    seg(cur,o.a,0,hf);
+    seg(o.a,o.b,0,o.sill); seg(o.a,o.b,o.head,hf);
+    var len=o.b-o.a;
+    if(o.k==='win'||o.k==='glass'){
+      var y0=o.sill,y1=o.head;
+      if(horiz) mk(g,o.a,fx-.04,o.b,fx+.04,y0,y1,M.glass,false); else mk(g,fx-.04,o.a,fx+.04,o.b,y0,y1,M.glass,false);
+      var mid=(o.a+o.b)/2;
+      if(horiz){mk(g,mid-.04,fx-.07,mid+.04,fx+.07,y0,y1,M.frame,false);} else {mk(g,fx-.07,mid-.04,fx+.07,mid+.04,y0,y1,M.frame,false);}
+      if(o.k==='win'){var ym=(y0+y1)/2; if(horiz) mk(g,o.a,fx-.07,o.b,fx+.07,ym-.04,ym+.04,M.frame,false); else mk(g,fx-.07,o.a,fx+.07,o.b,ym-.04,ym+.04,M.frame,false);}
+    }
+    if(o.k==='gate'){
+      if(horiz) mk(g,o.a,fx-.5,o.b,fx+.5,o.head-.1,o.head+.7,M.frame); else mk(g,fx-.5,o.a,fx+.5,o.b,o.head-.1,o.head+.7,M.frame);
+    }
+    if(o.k==='door'||o.k==='main'){
+      var pivot=new T.Group(); var s=o.sw||1, ang=Math.PI*70/180;
+      var dx,dz; if(horiz){dx=Math.cos(ang);dz=s*Math.sin(ang);pivot.position.set(o.a-W/2,0,fx-D/2);}
+      else{dx=s*Math.sin(ang);dz=Math.cos(ang);pivot.position.set(fx-W/2,0,o.a-D/2);}
+      pivot.rotation.y=Math.atan2(-dz,dx);
+      var leaf=new T.Mesh(new T.BoxGeometry(len-.05,o.head-.05,.12),o.k==='main'?M.main:M.door);
+      leaf.position.set(len/2,(o.head-.05)/2,0); leaf.castShadow=true; pivot.add(leaf); g.add(pivot);
+    }
+    cur=o.b;
+  });
+  seg(cur,hi+ext,0,hf);
+}
+function buildFloor(key){
+  var g=new T.Group();
+  var rooms=ROOMS[key];
+  if(key==='g'){
+    mk(g,0,0,W,D,-0.6,0,M.slab);
+  } else {
+    SLABS.forEach(function(q){mk(g,q[0],q[1],q[2],q[3],-0.5,0,M.slab)});
+  }
+  rooms.forEach(function(r,i){ if(r.hole) return; [r.r].concat(r.x||[]).forEach(function(q){ mk(g,q[0],q[1],q[2],q[3],0,0.05+i*0.004,M.floor[r.type],false); }); });
+  WALLS[key].forEach(function(w){buildWall(g,w)});
+  FURN.filter(function(o){return o.f===key}).forEach(function(o){mk(g,o.x1,o.z1,o.x2,o.z2,o.k==='rug'?0.05:0.05,o.h+0.05,M.f[o.k])});
+  if(key==='g'){
+    // compact dog-leg stair: flight 1 on x 13.8-16.6 going south, landing, flight 2 on x 11-13.8 going north
+    for(var i=1;i<=8;i++){ var top=i*RH; mk(g,13.8,25.9+(i-1)*0.75,16.6,25.9+i*0.75,top-0.35,top,M.stairs); }
+    mk(g,11,31.9,16.6,34.4,9*RH-0.35,9*RH,M.stairs);
+    for(var j=1;j<=7;j++){ var tp=(9+j)*RH; mk(g,11,31.9-j*0.75,13.8,31.9-(j-1)*0.75,tp-0.35,tp,M.stairs); }
+  }
+  return g;
+}
+function init3d(){
+  if(!T||!T.OrbitControls){ return false; }
+  try{ renderer=new T.WebGLRenderer({canvas:canvas,antialias:true,alpha:false}); }catch(e){ return false; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.shadowMap.enabled=true; renderer.shadowMap.type=T.PCFSoftShadowMap;
+  scene=new T.Scene(); camera=new T.PerspectiveCamera(38,1,1,500);
+  controls=new T.OrbitControls(camera,canvas);
+  controls.enableDamping=true; controls.dampingFactor=.08; controls.maxPolarAngle=Math.PI/2-.04; controls.minDistance=22; controls.maxDistance=150;
+  controls.screenSpacePanning=true;
+  initMaterials();
+  scene.add(new T.HemisphereLight(0xffffff,0x6f7b84,.55));
+  var sun=new T.DirectionalLight(0xfff4e6,.62); sun.position.set(35,70,45); sun.castShadow=true;
+  sun.shadow.mapSize.set(1024,1024); var sc=sun.shadow.camera; sc.left=-50;sc.right=50;sc.top=50;sc.bottom=-50;sc.near=10;sc.far=220; sun.shadow.bias=-0.0004;
+  scene.add(sun);
+  // site
+  var site=new T.Group(); scene.add(site);
+  var gp=new T.Mesh(new T.BoxGeometry(220,.2,220),M.ground); gp.position.y=-.7; gp.receiveShadow=true; site.add(gp);
+  var rs=new T.Mesh(new T.BoxGeometry(200,.1,12),M.road); rs.position.set(0,-.55,D/2+7.5); rs.receiveShadow=true; site.add(rs);
+  var l1=labelPlane('ROAD · FRONT (SOUTH)',26,5); l1.position.set(-14,-.47,D/2+7.5); site.add(l1);
+  gG=buildFloor('g'); scene.add(gG);
+  fG=buildFloor('f'); fG.position.y=HT+GAP; scene.add(fG);
+  // roof
+  rG=new T.Group(); fG.add(rG);
+  mk(rG,0,0,18.6,26.4,HT,HT+.5,M.slab); mk(rG,18.6,4,W,26.4,HT,HT+.5,M.slab); mk(rG,0,26.4,16.6,D,HT,HT+.5,M.slab);
+  var tank=new T.Mesh(new T.CylinderGeometry(1.5,1.5,3.6,24),M.tank); tank.position.set(3.2-W/2,HT+.5+1.8+.8,30.5-D/2); tank.castShadow=true; rG.add(tank);
+  [[2,29.3],[4.4,29.3],[2,31.7],[4.4,31.7]].forEach(function(p){mk(rG,p[0]-.15,p[1]-.15,p[0]+.15,p[1]+.15,HT+.5,HT+1.3,M.frame,false)});
+  rG.visible=false;
+  // podium (ghost of the ground floor when only the first floor is shown)
+  podium=new T.Mesh(new T.BoxGeometry(W,HT,D),M.podium); podium.position.y=HT/2; podium.visible=false; scene.add(podium);
+  var pe=new T.LineSegments(new T.EdgesGeometry(podium.geometry),new T.LineBasicMaterial({color:0x7e929d,transparent:true,opacity:.6})); podium.add(pe);
+  // zones overlay on both floors
+  var zt=zoneTexture();
+  [gG,fG].forEach(function(g){
+    var p=new T.Mesh(new T.PlaneGeometry(W,D),new T.MeshBasicMaterial({map:zt,transparent:true,opacity:.62,depthWrite:false}));
+    p.rotation.x=-Math.PI/2; p.position.y=.09; p.visible=false; g.add(p); zonesG.push(p);
+  });
+  applyTheme();
+  camera.position.set(38,30,46); controls.target.set(0,9,0);
+  has3d=true; return true;
+}
+function groupOf(it){return it.f==='g'?gG:fG}
+function clearHL(){ if(hlObj&&hlObj.parent){hlObj.parent.remove(hlObj)} hlObj=null; dirty=true; }
+function setHL(it){
+  clearHL(); if(!has3d||!it) return;
+  var g=groupOf(it), r=it.rect, h=HT, y0=0;
+  if(it.hl==='door'){h=7.2}
+  if(it.hl==='floor'){h=.3}
+  if(it.hl==='roof'){y0=HT+.5;h=4.5}
+  var box=new T.BoxGeometry(r[2]-r[0],h,r[3]-r[1]);
+  var grp=new T.Group(); grp.position.set((r[0]+r[2])/2-W/2,y0+h/2,(r[1]+r[3])/2-D/2);
+  grp.add(new T.LineSegments(new T.EdgesGeometry(box),M.hlLine));
+  var fl=new T.Mesh(new T.PlaneGeometry(r[2]-r[0],r[3]-r[1]),M.hlFill); fl.rotation.x=-Math.PI/2; fl.position.y=-h/2+.12; grp.add(fl);
+  g.add(grp); hlObj=grp; dirty=true;
+}
+function goalTargetY(){ return state.floor==='g'?3:state.floor==='f'?(HT+4):(state.explode?(HT+GAP)/2+4:HT-1); }
+function setCamGoal(kind){
+  if(!has3d) return;
+  var ty=goalTargetY(); tgtGoal=new T.Vector3(0,ty,0);
+  var off=kind==='top'?new T.Vector3(0,84,.01):new T.Vector3(38,22+ (state.floor==='both'&&state.explode?10:0),46);
+  camGoal=tgtGoal.clone().add(off);
+}
+function resize3d(){
+  var r=stage.getBoundingClientRect(); if(!has3d||r.width<2) return;
+  renderer.setSize(r.width,r.height,false); camera.aspect=r.width/r.height; camera.updateProjectionMatrix(); dirty=true;
+}
+var tmpV;
+var dirty=true; function redraw(){dirty=true}
+function loop(){
+  requestAnimationFrame(loop);
+  if(!has3d||state.view!=='3d') return;
+  var moving=false;
+  if(exOff!==exGoal){ exOff+=(exGoal-exOff)*.12; if(Math.abs(exGoal-exOff)<.01) exOff=exGoal; moving=true; }
+  fG.position.y=HT+exOff;
+  if(camGoal){camera.position.lerp(camGoal,.1); controls.target.lerp(tgtGoal,.1); moving=true; if(camera.position.distanceTo(camGoal)<.05&&controls.target.distanceTo(tgtGoal)<.05){camGoal=null;tgtGoal=null}}
+  if(controls.update()) moving=true;
+  if(!moving&&!dirty) return;
+  dirty=false;
+  renderer.render(scene,camera);
+  scene.updateMatrixWorld();
+  layoutChips();
+  var az=controls.getAzimuthalAngle(); $('needle').style.transform='rotate('+az+'rad)';
+}
+
+/* ============================================================
+   2D plan (SVG)
+   ============================================================ */
+var OX=72, OY=94, VBW=OX+W*10+118, VBH=OY+D*10+104;
+var svg=$('s2');
+function spans(w){
+  var horiz=w.z1===w.z2, lo=horiz?Math.min(w.x1,w.x2):Math.min(w.z1,w.z2), hi=horiz?Math.max(w.x1,w.x2):Math.max(w.z1,w.z2);
+  var ext=(horiz&&w.ext)?EXT/2:0, cur=lo-ext, out=[];
+  w.open.slice().sort(function(a,b){return a.a-b.a}).forEach(function(o){ if(o.a>cur) out.push([cur,o.a]); cur=o.b; });
+  if(hi+ext>cur) out.push([cur,hi+ext]);
+  return {horiz:horiz,fixed:horiz?w.z1:w.x1,solids:out};
+}
+function X(v){return OX+v*10} function Y(v){return OY+v*10}
+function buildPlan(){
+  var f=state.floor==='f'?'f':'g', rooms=ROOMS[f], walls=WALLS[f], s='';
+  s+='<defs><pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="var(--ink2)" stroke-width="1" opacity=".55"/></pattern>'
+   +'<pattern id="grid" x="'+OX+'" y="'+OY+'" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M10 0H0V10" fill="none" stroke="var(--grid)" stroke-width=".5"/></pattern>'
+   +'<marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--ink)"/></marker></defs>';
+  s+='<rect width="'+VBW+'" height="'+VBH+'" fill="var(--paper)"/><rect width="'+VBW+'" height="'+VBH+'" fill="url(#grid)"/>';
+  // roads
+  s+='<rect x="'+(OX-40)+'" y="'+(Y(D)+14)+'" width="'+(W*10+80)+'" height="40" fill="var(--sc-road)"/>';
+  s+='<text x="'+(X(5))+'" y="'+(Y(D)+38)+'" fill="#fff" opacity=".85" font-family="var(--font-mono)" font-size="10" letter-spacing="3" text-anchor="middle">ROAD · FRONT</text>';
+  // room fills
+  rooms.forEach(function(r){ [r.r].concat(r.x||[]).forEach(function(q){ s+='<rect x="'+X(q[0])+'" y="'+Y(q[1])+'" width="'+(q[2]-q[0])*10+'" height="'+(q[3]-q[1])*10+'" fill="var(--r-'+r.type+')"'+(r.hole?' opacity=".35"':'')+'/>'; }); });
+  if(f==='f'){ s+='<rect x="'+X(11)+'" y="'+Y(26.65)+'" width="56" height="'+(7.75*10)+'" fill="url(#hatch)"/>'; }
+  // zones
+  if(state.zones){
+    var zc=[['NW','#9aa7b0'],['N','#6aa0d8'],['NE','#3b8fe0'],['W','#8aa8c0'],['CENTRE','#e0b64a'],['E','#f0a640'],['SW','#b98b5a'],['S','#c9786a'],['SE','#e0603a']];
+    zc.forEach(function(c,i){ var cx=(i%3)*W/3, cy=Math.floor(i/3)*D/3;
+      s+='<rect x="'+X(cx)+'" y="'+Y(cy)+'" width="'+(W/3*10)+'" height="'+(D/3*10)+'" fill="'+c[1]+'" fill-opacity=".30" stroke="var(--ink)" stroke-opacity=".5" stroke-dasharray="5 4"/>';
+      s+='<text x="'+(X(cx)+W/3*5)+'" y="'+(Y(cy)+D/3*5+4)+'" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="20" fill="var(--ink)" opacity=".28" letter-spacing="2">'+c[0]+'</text>'; });
+  }
+  // furniture
+  FURN.filter(function(o){return o.f===f&&o.k!=='car'&&o.k!=='cabin'}).forEach(function(o){
+    var fill=o.k==='mandir'?'#E3A04A':o.k==='bar'?'#8A6A50':o.k==='coffee'?'#C9372C':o.k==='planter'?'#6aa862':o.k==='rug'?'var(--ink2)':o.k==='hob'?'var(--ink2)':'var(--furn)';
+    s+='<rect x="'+X(o.x1)+'" y="'+Y(o.z1)+'" width="'+(o.x2-o.x1)*10+'" height="'+(o.z2-o.z1)*10+'" rx="1.5" fill="'+fill+'" fill-opacity="'+(o.k==='rug'?.16:1)+'" stroke="var(--ink2)" stroke-width=".8"/>';
+  });
+  // stairs
+  var ln=function(x1,x2,z,d){return '<line x1="'+X(x1)+'" x2="'+X(x2)+'" y1="'+Y(z)+'" y2="'+Y(z)+'" stroke="var(--ink2)" stroke-width=".8"'+(d?' stroke-dasharray="3 2"':'')+'/>'};
+  if(f==='g'){
+    for(var i=0;i<=8;i++) s+=ln(13.8,16.6,25.9+i*.75);
+    for(var j=0;j<=7;j++) s+=ln(11,13.8,31.9-j*.75);
+    s+='<path d="M'+X(15.2)+' '+Y(26.3)+'V'+Y(33.1)+'H'+X(12.4)+'V'+Y(27.6)+'" fill="none" stroke="var(--ink)" stroke-width="1.4" marker-end="url(#ah)"/>';
+    s+='<text x="'+X(14.4)+'" y="'+Y(25.5)+'" font-family="var(--font-mono)" font-size="8" fill="var(--ink)">UP</text>';
+  } else {
+    for(var k=0;k<=7;k++) s+=ln(11,13.8,31.9-k*.75,true);
+    s+='<text x="'+X(15.2)+'" y="'+Y(30.5)+'" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--ink)">VOID</text>';
+  }
+  // walls
+  walls.forEach(function(w){
+    var sp=spans(w), t=w.rail?1.6:(w.low?EXT*10*.55:(w.ext?EXT*10:INT*10)), fx=sp.fixed;
+    sp.solids.forEach(function(q){
+      if(w.rail){ s+= sp.horiz?'<line x1="'+X(q[0])+'" x2="'+X(q[1])+'" y1="'+Y(fx)+'" y2="'+Y(fx)+'" stroke="var(--accent)" stroke-width="2"/>':'<line y1="'+Y(q[0])+'" y2="'+Y(q[1])+'" x1="'+X(fx)+'" x2="'+X(fx)+'" stroke="var(--accent)" stroke-width="2"/>'; return; }
+      var fill=w.low?'var(--ink2)':'var(--ink)';
+      s+= sp.horiz?'<rect x="'+X(q[0])+'" y="'+(Y(fx)-t/2)+'" width="'+((q[1]-q[0])*10)+'" height="'+t+'" fill="'+fill+'"/>':'<rect x="'+(X(fx)-t/2)+'" y="'+Y(q[0])+'" width="'+t+'" height="'+((q[1]-q[0])*10)+'" fill="'+fill+'"/>';
+    });
+    w.open.forEach(function(o){
+      var L=(o.b-o.a)*10, thick=Math.max(t,4);
+      if(o.k==='win'||o.k==='glass'){
+        if(sp.horiz) s+='<rect x="'+X(o.a)+'" y="'+(Y(fx)-thick/2)+'" width="'+L+'" height="'+thick+'" fill="var(--panel)" stroke="var(--ink)" stroke-width=".8"/><line x1="'+X(o.a)+'" x2="'+X(o.b)+'" y1="'+Y(fx)+'" y2="'+Y(fx)+'" stroke="var(--accent)" stroke-width="1.2"/>';
+        else s+='<rect x="'+(X(fx)-thick/2)+'" y="'+Y(o.a)+'" width="'+thick+'" height="'+L+'" fill="var(--panel)" stroke="var(--ink)" stroke-width=".8"/><line y1="'+Y(o.a)+'" y2="'+Y(o.b)+'" x1="'+X(fx)+'" x2="'+X(fx)+'" stroke="var(--accent)" stroke-width="1.2"/>';
+      } else if(o.k==='gate'){
+        s+= sp.horiz?'<line x1="'+X(o.a)+'" x2="'+X(o.b)+'" y1="'+Y(fx)+'" y2="'+Y(fx)+'" stroke="var(--ink)" stroke-width="2" stroke-dasharray="6 3"/><text x="'+((X(o.a)+X(o.b))/2)+'" y="'+(Y(fx)-6)+'" text-anchor="middle" font-family="var(--font-mono)" font-size="7.5" fill="var(--ink2)">GATE</text>':'';
+      } else if(o.k==='door'||o.k==='main'){
+        var sw=o.sw||1, c='var(--ink)';
+        if(sp.horiz){ var ex=Y(fx)+sw*L; s+='<line x1="'+X(o.a)+'" y1="'+Y(fx)+'" x2="'+X(o.a)+'" y2="'+ex+'" stroke="'+c+'" stroke-width="1.4"/><path d="M'+X(o.b)+' '+Y(fx)+' A'+L+' '+L+' 0 0 '+(sw>0?1:0)+' '+X(o.a)+' '+ex+'" fill="none" stroke="'+c+'" stroke-width=".8" stroke-dasharray="3 2"/>'; }
+        else { var ex2=X(fx)+sw*L; s+='<line x1="'+X(fx)+'" y1="'+Y(o.a)+'" x2="'+ex2+'" y2="'+Y(o.a)+'" stroke="'+c+'" stroke-width="1.4"/><path d="M'+X(fx)+' '+Y(o.b)+' A'+L+' '+L+' 0 0 '+(sw>0?0:1)+' '+ex2+' '+Y(o.a)+'" fill="none" stroke="'+c+'" stroke-width=".8" stroke-dasharray="3 2"/>'; }
+      }
+    });
+  });
+  // selection highlight
+  var sel=state.sel&&ITEM[state.sel];
+  if(sel&&sel.f===f&&sel.f!=='r'){ var q=sel.rect; s+='<rect x="'+X(q[0])+'" y="'+Y(q[1])+'" width="'+((q[2]-q[0])*10)+'" height="'+((q[3]-q[1])*10)+'" fill="var(--accent)" fill-opacity=".16" stroke="var(--accent)" stroke-width="2.5"/>'; }
+  // main entry arrow
+  if(f==='g'){ s+='<path d="M'+X(5.5)+' '+(Y(D)+50)+'V'+(Y(D)+10)+'" stroke="var(--ink)" stroke-width="1.8" marker-end="url(#ah)" fill="none"/>'
+     +'<path d="M'+X(9.6)+' '+Y(19.1)+'H'+(X(11)+12)+'" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#ah)" fill="none"/>'
+     +'<rect x="'+X(2.2)+'" y="'+Y(17.6)+'" width="65" height="162" rx="10" fill="none" stroke="var(--ink)" stroke-width="1.2"/>'
+     +'<rect x="'+X(2.8)+'" y="'+Y(21.4)+'" width="53" height="72" rx="6" fill="var(--ink2)" fill-opacity=".25" stroke="var(--ink2)"/>'; }
+  // dimensions
+  function dimH(y,xs,labels,big){ var out='<line x1="'+X(xs[0])+'" x2="'+X(xs[xs.length-1])+'" y1="'+y+'" y2="'+y+'" stroke="var(--ink2)" stroke-width=".8"/>';
+    xs.forEach(function(x){out+='<line x1="'+X(x)+'" x2="'+X(x)+'" y1="'+(y-4)+'" y2="'+(y+4)+'" stroke="var(--ink2)" stroke-width=".8"/>'});
+    for(var i=0;i<labels.length;i++){out+='<text x="'+((X(xs[i])+X(xs[i+1]))/2)+'" y="'+(y-4)+'" text-anchor="middle" font-family="var(--font-mono)" font-size="'+(big?10:8.5)+'" fill="var(--ink)">'+labels[i]+'</text>'} return out; }
+  function dimV(x,zs,labels,big){ var out='<line y1="'+Y(zs[0])+'" y2="'+Y(zs[zs.length-1])+'" x1="'+x+'" x2="'+x+'" stroke="var(--ink2)" stroke-width=".8"/>';
+    zs.forEach(function(z){out+='<line y1="'+Y(z)+'" y2="'+Y(z)+'" x1="'+(x-4)+'" x2="'+(x+4)+'" stroke="var(--ink2)" stroke-width=".8"/>'});
+    for(var i=0;i<labels.length;i++){var cy=(Y(zs[i])+Y(zs[i+1]))/2; out+='<text transform="rotate(-90 '+(x-4)+' '+cy+')" x="'+(x-4)+'" y="'+cy+'" text-anchor="middle" font-family="var(--font-mono)" font-size="'+(big?10:8.5)+'" fill="var(--ink)">'+labels[i]+'</text>'} return out; }
+  s+=dimH(OY-34,[0,W],['24′-7″'],true);
+  s+= f==='g'?dimH(OY-16,[0,11,16.6,W],['11′','5.6′','8′']):dimH(OY-16,[0,11,13.6,W],['11′','2.6′','11′']);
+  s+=dimV(OX-34,[0,D],['34′-5″'],true);
+  s+= f==='g'?dimV(OX-16,[0,4.4,16.4,D],['4.4′','12′','18′']):dimV(OX-16,[0,5,17.5,21.4,D],['5′','12.5′','3.9′','13′']);
+  // title, compass, scale
+  s+='<text x="'+OX+'" y="22" font-family="var(--font-display)" font-weight="700" font-size="19" fill="var(--ink)" letter-spacing=".5">'+(f==='g'?'GROUND FLOOR PLAN':'FIRST FLOOR PLAN')+'</text>';
+  s+='<text x="'+OX+'" y="36" font-family="var(--font-mono)" font-size="9" fill="var(--ink2)">846 sq ft · ceiling 10′ · road on the south</text>';
+  var cx=VBW-40, cy=44;
+  s+='<circle cx="'+cx+'" cy="'+cy+'" r="19" fill="none" stroke="var(--ink2)"/><path d="M'+cx+' '+(cy-17)+'L'+(cx+6)+' '+(cy+5)+'L'+cx+' '+(cy+1)+'L'+(cx-6)+' '+(cy+5)+'Z" fill="var(--accent)"/><text x="'+cx+'" y="'+(cy-23)+'" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="12" fill="var(--ink)">N</text>';
+  var by=Y(D)+82;
+  s+='<g font-family="var(--font-mono)" font-size="8.5" fill="var(--ink)"><rect x="'+OX+'" y="'+by+'" width="25" height="5" fill="var(--ink)"/><rect x="'+(OX+25)+'" y="'+by+'" width="25" height="5" fill="none" stroke="var(--ink)"/><text x="'+OX+'" y="'+(by+16)+'">0</text><text x="'+(OX+44)+'" y="'+(by+16)+'">5′</text></g>';
+  svg.setAttribute('viewBox','0 0 '+VBW+' '+VBH);
+  svg.innerHTML=s;
+}
+function plan2px(){
+  var r=svg.getBoundingClientRect(), st=stage.getBoundingClientRect(), k=Math.min(r.width/VBW,r.height/VBH);
+  var ox=(r.width-VBW*k)/2+r.left-st.left, oy=(r.height-VBH*k)/2+r.top-st.top;
+  return function(x,z){return [ox+(OX+x*10)*k, oy+(OY+z*10)*k]};
+}
+
+/* ============================================================
+   chips, card, lists
+   ============================================================ */
+var chipsEl=$('chips');
+function buildChips(){
+  chipsEl.innerHTML='';
+  ITEMS.forEach(function(it){
+    var b=document.createElement('button'); b.className='chip'; b.type='button'; b.setAttribute('aria-pressed','false');
+    b.setAttribute('aria-label','Vastu note: '+it.name);
+    b.innerHTML='<span class="nm"><b></b>'+(it.dims?'<small></small>':'')+'</span><span class="ib" aria-hidden="true">i</span>';
+    b.querySelector('b').textContent=it.chip; if(it.dims) b.querySelector('small').textContent=it.dims;
+    b.addEventListener('click',function(){select(it.id,true)});
+    chipsEl.appendChild(b); it.el=b;
+  });
+}
+function itemVisible(it){
+  if(state.view==='2d'){ if(it.f==='r') return false; return it.f===(state.floor==='f'?'f':'g'); }
+  if(it.f==='g') return state.floor!=='f';
+  if(it.f==='f') return state.floor!=='g';
+  return state.roof&&state.floor!=='g';
+}
+function layoutChips(){
+  var rect=stage.getBoundingClientRect(), p2=state.view==='2d'?plan2px():null;
+  if(!tmpV&&T) tmpV=new T.Vector3();
+  ITEMS.forEach(function(it){
+    var c=it.el;
+    if(!itemVisible(it)){c.hidden=true;return;}
+    var px;
+    if(p2){ px=p2(it.pos[0],it.pos[1]); }
+    else{
+      tmpV.set(it.pos[0]-W/2,it.pos[2],it.pos[1]-D/2);
+      var g=it.f==='g'?gG:fG; g.localToWorld(tmpV); tmpV.project(camera);
+      if(tmpV.z>1){c.hidden=true;return;}
+      px=[(tmpV.x*.5+.5)*rect.width,(-tmpV.y*.5+.5)*rect.height];
+    }
+    if(!p2&&!state.labels){c.hidden=true;return;}
+    c.hidden=false; c.style.transform='translate('+px[0].toFixed(1)+'px,'+px[1].toFixed(1)+'px) translate(-50%,-50%)';
+  });
+}
+function srcHtml(keys){
+  return keys.map(function(k){var s=S[k]; return '<li>'+(s.u?'<a href="'+s.u+'" target="_blank" rel="noopener">'+s.t+'</a>':s.t)+'</li>'}).join('');
+}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function showCard(it){
+  var c=$('card');
+  c.innerHTML='<button class="x" aria-label="Close">×</button>'
+   +'<div class="badges"><span class="badge '+it.grade.toLowerCase()+'">'+(it.grade==='Ideal'?'✓ Ideal zone':it.grade==='Permitted'?'✓ Permitted zone':'! Against most texts')+'</span><span class="zone">'+esc(it.zone)+'</span></div>'
+   +'<h2>'+esc(it.name)+(it.dims?' <span class="zone">'+it.dims+'</span>':'')+'</h2>'
+   +'<h3>'+(it.grade==='Caution'?'Why it is flagged':'Why it complies')+'</h3><p>'+esc(it.why)+'</p>'
+   +'<h3>In this plan</h3><ul>'+it.tips.map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ul>'
+   +'<h3>Source</h3><ul class="src">'+srcHtml(it.src)+'</ul>';
+  c.classList.toggle('left',it.pos[0]>W/2); c.hidden=false; c.querySelector('.x').addEventListener('click',function(){select(null)});
+  c.scrollTop=0;
+}
+function select(id,fly){
+  state.sel=id; var it=id?ITEM[id]:null;
+  ITEMS.forEach(function(x){x.el.setAttribute('aria-pressed',x.id===id?'true':'false')});
+  document.querySelectorAll('.chk button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.id===id?'true':'false')});
+  if(!it){ $('card').hidden=true; clearHL(); if(state.view==='2d') buildPlan(); return; }
+  // make sure the item's floor is visible
+  if(it.f==='r'){ if(!state.roof){state.roof=true} if(state.floor==='g'){state.floor='both';} if(state.view==='2d'&&has3d){state.view='3d';} }
+  else if(state.view==='3d'){ if(it.f==='g'&&state.floor==='f') state.floor='both'; if(it.f==='f'&&state.floor==='g') state.floor='both'; }
+  else { state.floor=it.f; }
+  applyAll(); showCard(it); setHL(it);
+  if(state.view==='2d') buildPlan();
+  if(has3d&&state.view==='3d'&&fly){
+    var g=groupOf(it), v=new T.Vector3(it.pos[0]-W/2,it.f==='r'?HT+3:(it.f==='f'?4:3),it.pos[1]-D/2); g.localToWorld(v); scene.updateMatrixWorld();
+    tgtGoal=v; camGoal=camera.position.clone().add(v.clone().sub(controls.target));
+  }
+}
+function renderLegend(){
+  var pre=state.view==='3d'?'--f-':'--r-';
+  $('legend').innerHTML=Object.keys(TYPE_NAMES).map(function(k){return '<span><i style="background:var('+pre+k+')"></i>'+TYPE_NAMES[k]+'</span>'}).join('');
+}
+function buildLists(){
+  ['g','f','r'].forEach(function(k){
+    var ul=$('list-'+k); ul.innerHTML='';
+    ITEMS.filter(function(i){return i.f===k}).forEach(function(it){
+      var li=document.createElement('li'), b=document.createElement('button'); b.type='button'; b.dataset.id=it.id; b.setAttribute('aria-pressed','false');
+      b.innerHTML='<span class="tick'+(it.grade==='Ideal'?'':it.grade==='Permitted'?' p':' c')+'">'+(it.grade==='Caution'?'!':'✓')+'</span><span></span><span class="z"></span>';
+      b.children[1].textContent=it.name; b.children[2].textContent=it.grade;
+      b.addEventListener('click',function(){select(it.id,true)}); li.appendChild(b); ul.appendChild(li);
+    });
+  });
+  var ideal=ITEMS.filter(function(i){return i.grade==='Ideal'}).length, caut=ITEMS.filter(function(i){return i.grade==='Caution'}).length;
+  $('score').textContent=(ITEMS.length-caut)+' / '+ITEMS.length;
+  $('scoreTxt').textContent='in ideal or permitted zones · '+ideal+' ideal · '+(ITEMS.length-ideal-caut)+' permitted'+(caut?' · '+caut+' flagged':'');
+  $('scoreNote').innerHTML=caut?'Rooms marked <b>ideal</b> or <b>permitted</b> follow the texts. The one marked in red (Bedroom 3 in the north-east) goes against most texts and needs your consultant’s sign-off.':'Every room and fixture below is placed in an <b>ideal</b> or a <b>permitted</b> zone. Nothing sits in a zone the texts say to avoid.';
+  renderLegend();
+  $('srcs').innerHTML=Object.keys(S).map(function(k){var s=S[k];return '<li>'+(s.u?'<a href="'+s.u+'" target="_blank" rel="noopener">'+s.t+'</a>':s.t)+'</li>'}).join('');
+}
+
+/* ============================================================
+   controls
+   ============================================================ */
+function syncToggles(){
+  $('v3').setAttribute('aria-pressed',state.view==='3d'); $('v2').setAttribute('aria-pressed',state.view==='2d');
+  document.querySelectorAll('[data-f]').forEach(function(b){
+    b.setAttribute('aria-pressed',b.dataset.f===state.floor);
+    if(b.dataset.f==='both') b.hidden=state.view==='2d';
+  });
+  $('t-zones').setAttribute('aria-pressed',state.zones); $('t-labels').setAttribute('aria-pressed',state.labels);
+  $('t-roof').setAttribute('aria-pressed',state.roof); $('t-explode').setAttribute('aria-pressed',state.explode);
+  var is3=state.view==='3d';
+  document.querySelectorAll('[data-3d]').forEach(function(b){b.hidden=!is3});
+  $('t-explode').hidden=!is3||state.floor!=='both';
+  $('stagebar').hidden=!is3; $('compass').hidden=!is3; $('facing').hidden=!is3;
+  $('hint').textContent=is3?'Drag to orbit · scroll to zoom · open the 2D plan for the (i) Vastu notes':'Tap an (i) for the Vastu reason';
+}
+function applyAll(){
+  if(state.view==='2d'&&state.floor==='both') state.floor='g';
+  syncToggles();
+  canvas.hidden=state.view!=='3d'; svg.toggleAttribute('hidden',state.view!=='2d');
+  ITEMS.forEach(function(it){it.el.classList.toggle('noname',!state.labels&&state.view==='2d'); it.el.tabIndex=state.view==='2d'?0:-1;});
+  chipsEl.classList.toggle('is3',state.view==='3d');
+  renderLegend();
+  if(has3d){
+    gG.visible=state.floor!=='f'; fG.visible=state.floor!=='g';
+    podium.visible=state.floor==='f';
+    rG.visible=state.roof&&state.floor!=='g';
+    zonesG.forEach(function(p){p.visible=state.zones});
+    exGoal=(state.floor==='both'&&state.explode)?GAP:0; if(state.floor!=='both') exOff=state.floor==='f'?0:exOff;
+    if(state.floor==='f') {exOff=0;exGoal=0;}
+  }
+  dirty=true;
+  if(state.view==='2d'){ buildPlan(); requestAnimationFrame(layoutChips); }
+  writeHash();
+}
+function wire(){
+  $('v3').addEventListener('click',function(){ if(!has3d) return; state.view='3d'; applyAll(); resize3d(); setCamGoal('home'); });
+  $('v2').addEventListener('click',function(){ state.view='2d'; applyAll(); });
+  document.querySelectorAll('[data-f]').forEach(function(b){b.addEventListener('click',function(){state.floor=b.dataset.f;applyAll();if(state.view==='3d')setCamGoal('home');if(state.sel){var it=ITEM[state.sel];if(!itemVisible(it))select(null)}})});
+  $('t-zones').addEventListener('click',function(){state.zones=!state.zones;applyAll()});
+  $('t-labels').addEventListener('click',function(){state.labels=!state.labels;applyAll()});
+  $('t-roof').addEventListener('click',function(){state.roof=!state.roof;applyAll();if(!state.roof&&state.sel==='tank')select(null)});
+  $('t-explode').addEventListener('click',function(){state.explode=!state.explode;applyAll();setCamGoal('home')});
+  $('b-home').addEventListener('click',function(){setCamGoal('home')});
+  $('b-top').addEventListener('click',function(){setCamGoal('top')});
+  window.addEventListener('resize',function(){resize3d();if(state.view==='2d')layoutChips()});
+  if(window.ResizeObserver) new ResizeObserver(function(){resize3d();if(state.view==='2d')layoutChips()}).observe(stage);
+  window.addEventListener('hashchange',function(){ var pv=state.view,pf=state.floor; if(parseHash()&&(pv!==state.view||pf!==state.floor)){ applyAll(); if(has3d&&state.view==='3d'){resize3d();setCamGoal('home')} } });
+  if(window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){applyTheme()});
+  new MutationObserver(function(){applyTheme()}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&state.sel)select(null)});
+}
+
+/* ---------- boot ---------- */
+buildChips(); buildLists(); wire();
+var gotHash=parseHash();
+if(!init3d()){
+  has3d=false; state.view='2d'; if(state.floor==='both') state.floor='g';
+  $('v3').disabled=true; $('v3').title='3D needs WebGL, which is not available here';
+  var note=document.createElement('div'); note.className='note'; note.style.cssText='position:absolute;left:12px;bottom:12px;z-index:3;font-size:12px;color:var(--ink2);max-width:60%';
+  note.textContent='3D view is unavailable in this browser. Showing the 2D plan.'; stage.appendChild(note);
+} else {
+  if(!gotHash){state.view='3d';state.floor='both';}
+  resize3d();
+}
+applyAll();
+if(has3d){ resize3d(); setCamGoal('home'); camera.position.copy(camGoal); controls.target.copy(tgtGoal); camGoal=null; tgtGoal=null; }
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

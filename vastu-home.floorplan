@@ -1,0 +1,164 @@
+# Vastu Home Plan, converted from ~/Downloads/Vastu-Home-Plan.html
+#
+# SE-facing plot, road in front (south). Ground + first floor + roof.
+# Plot 24'7" x 34'5" (24.6 x 34.4 ft), about 846 sq ft per floor.
+# 1 grid unit = 1 foot. North is at the top, the road is at the bottom.
+#
+# Room rectangles and opening positions come from the ROOMS / WALLS data
+# in the source page. The source hall and first-floor lounge are L-shaped;
+# the DSL only has rectangles, so each is split into parts joined by
+# full-width openings (HallNorth / Hall / HallSouth, and Corridor / LobbyF /
+# LoungeSouth beside the Lounge).
+# Upstairs, the corridor, lounge, stairwell and terrace are shifted by up to
+# 0.75 ft so the stairwell stacks exactly on the ground-floor one.
+# Furniture, the roof water tank and the Vastu zone overlay are not carried over.
+#
+# Design fixes (v2). Each one keeps to the Vastu rules stated in the source:
+# washrooms only in the north-west / west, nothing in the north-east or on
+# the centre point (12.3, 17.2), stairs on the south side climbing clockwise,
+# the south side higher, the NE patch open to the sky, the master in the SW.
+#   1. Ground passage widened from 2 ft to 3 ft. The attached bath (5 ft) and
+#      the common WC (4 ft) give up the space and both stay in the north-west.
+#   2. First-floor corridor widened from 2.6 ft to 3 ft by moving the east
+#      rooms' west wall 0.4 ft east (utility, bedroom 3, lounge). The west
+#      side, with the master in the SW, keeps its full size.
+#   3. The first-floor common bath takes in the old 5 ft passage and opens
+#      straight onto the corridor. WC and shower stay at the west end, in the
+#      NW corner above the ground-floor washrooms; the vanity is at the east
+#      end. Bedrooms 2 and 3 are now 2 rooms from a bathroom instead of 3 and 4.
+#   4. Bedroom 3's door moves from the lounge to the corridor, at the same
+#      south-west corner of the room, so it reaches the bath without
+#      crossing the lounge.
+#   5. The stair rooms now include their landings: the ground-floor stair
+#      lobby and the upstairs arrival area (the lounge's south-west corner in
+#      the source) are part of the stairwell, which opens to the hall below
+#      and to the corridor and lounge above.
+#   6. The stair continues to the roof inside a stair cabin (mumty) over the
+#      stairwell, so the upper floor has its own stair element and the roof
+#      water tank can be reached. The cabin sits in the south, where the
+#      source wants the house heavier and higher; its door faces north.
+
+%%{version: 1.0}%%
+floorplan
+
+  style Living  { floor_color: "#C08A4B", wall_color: "#F4F1EC", roughness: 0.6, metalness: 0.05 }
+  style Bed     { floor_color: "#9A5B34", wall_color: "#F4F1EC", roughness: 0.6, metalness: 0.05 }
+  style Kitchen { floor_color: "#D2A86E", wall_color: "#FFFFFF", roughness: 0.4, metalness: 0.05 }
+  style Wet     { floor_color: "#5E3F26", wall_color: "#FFFFFF", roughness: 0.3, metalness: 0.1 }
+  style Stair   { floor_color: "#6E4324", wall_color: "#F4F1EC", roughness: 0.7, metalness: 0.05 }
+  style Terrace { floor_color: "#A57446", wall_color: "#E8E2D8", roughness: 0.9, metalness: 0.0 }
+  style Garage  { floor_color: "#7E858B", wall_color: "#E8E2D8", roughness: 0.9, metalness: 0.0 }
+  style Pooja   { floor_color: "#C9822F", wall_color: "#FFF7E8", roughness: 0.5, metalness: 0.05 }
+
+  config {
+    default_unit: ft,
+    area_unit: sqft,
+    default_height: 10,
+    default_style: Living
+  }
+
+  # ============================================================
+  # Ground floor
+  # ============================================================
+  floor GroundFloor height 10ft {
+    # North strip: washrooms (NW), passage, hall, pooja (NE)
+    room Bath at (0,0) size (5 x 4.4) walls [top: window, right: solid, bottom: solid, left: solid] label "Bath" style Wet
+    room WC at (5,0) size (4 x 4.4) walls [top: window, right: solid, bottom: solid, left: solid] label "WC" style Wet
+    room Passage at (9,0) size (3 x 4.4) walls [top: solid, right: solid, bottom: solid, left: solid] label "Passage"
+    room HallNorth at (12,0) size (6.6 x 6) walls [top: window, right: solid, bottom: solid, left: solid] label "Hall (north)"
+    room Pooja at (18.6,0) size (6 x 6) walls [top: window, right: solid, bottom: solid, left: solid] label "Pooja" style Pooja
+
+    # Bedroom on the west, hall on the east
+    room Bedroom at (0,4.4) size (12 x 12) walls [top: solid, right: solid, bottom: solid, left: window] label "Bedroom" style Bed
+    room Hall at (12,6) size (12.6 x 10.4) walls [top: solid, right: window, bottom: solid, left: solid] label "Hall"
+    room HallSouth at (11,16.4) size (13.6 x 6) walls [top: solid, right: solid, bottom: solid, left: solid] label "Hall (south)"
+
+    # South half: parking porch (SW), stair lobby + stair, kitchen (SE)
+    room Parking at (0,16.4) size (11 x 18) walls [top: solid, right: solid, bottom: solid, left: window] label "Parking porch" style Garage
+    room StairWell at (11,22.4) size (5.6 x 12) walls [top: solid, right: solid, bottom: window, left: solid] label "Stairs" style Stair
+    room Kitchen at (16.6,22.4) size (8 x 12) walls [top: solid, right: window, bottom: window, left: solid] label "Kitchen" style Kitchen
+
+    # Compact dog-leg: down the east half going south, landing, back up the
+    # west half. Clockwise, 17 risers.
+    stair MainStair at (11,25.9) shape U-shaped from top turn right runs 8,8 landing (5.6ft x 2.5ft) rise 10ft width 2.7ft tread 0.75ft label "Stair"
+  }
+
+  # ============================================================
+  # First floor (no kitchen)
+  # ============================================================
+  floor FirstFloor height 10ft {
+    # North strip: common bath (NW), corridor, utility, open NE patch
+    room BathF at (0,0) size (11 x 5) walls [top: window, right: solid, bottom: solid, left: window] label "Bath" style Wet
+    room Corridor at (11,0) size (3 x 22.4) walls [top: window, right: solid, bottom: solid, left: solid] label "Corridor"
+    room Utility at (14,0) size (4.6 x 4) walls [top: window, right: solid, bottom: solid, left: solid] label "Utility" style Wet
+    room NEPatch at (18.6,0) size (6 x 4) height 3ft walls [top: solid, right: solid, bottom: window, left: solid] label "Open patch (NE)" style Terrace
+
+    # West side: bedroom 2, master washroom + lobby, master bedroom (SW)
+    room Bedroom2 at (0,5) size (11 x 12.5) walls [top: solid, right: solid, bottom: solid, left: window] label "Bedroom 2" style Bed
+    room MasterBath at (0,17.5) size (5.6 x 3.9) walls [top: solid, right: solid, bottom: solid, left: window] label "Master bath" style Wet
+    room LobbyF at (5.6,17.5) size (5.4 x 3.9) walls [top: solid, right: solid, bottom: solid, left: solid] label "Lobby"
+    room Master at (0,21.4) size (11 x 13) walls [top: solid, right: solid, bottom: window, left: window] label "Master bedroom" style Bed
+
+    # East side: bedroom 3, lounge, road-side terrace, stairwell
+    room Bedroom3 at (14,4) size (10.6 x 12) walls [top: window at 72%, right: window, bottom: solid, left: solid] label "Bedroom 3" style Bed
+    room Lounge at (14,16) size (10.6 x 6.4) walls [top: solid, right: window, bottom: solid, left: solid] label "Lounge"
+    room LoungeSouth at (16.6,22.4) size (8 x 3.5) walls [top: solid, right: window, bottom: solid, left: solid] label "Lounge (south)"
+    room StairWellF at (11,22.4) size (5.6 x 12) walls [top: solid, right: solid, bottom: window, left: solid] label "Stairwell" style Stair
+    room Terrace at (16.6,25.9) size (8 x 8.5) height 3.5ft walls [top: solid, right: solid, bottom: solid, left: solid] label "Terrace" style Terrace
+
+    # Same clockwise dog-leg, continuing up to the stair cabin on the roof
+    stair MainStair at (11,25.9) shape U-shaped from top turn right runs 8,8 landing (5.6ft x 2.5ft) rise 10ft width 2.7ft tread 0.75ft label "Stair"
+  }
+
+  # ============================================================
+  # Roof: flat slab with a 3 ft parapet, as in the source. The NE patch
+  # and the road-side terrace stay open to the sky, so the slab wraps
+  # around them. The stair cabin (mumty) covers the stairwell.
+  # ============================================================
+  floor Roof {
+    room RoofWest at (0,0) size (18.6 x 25.9) height 3ft walls [top: solid, right: solid, bottom: solid, left: solid] label "Roof" style Terrace
+    room RoofEast at (18.6,4) size (6 x 21.9) height 3ft walls [top: solid, right: solid, bottom: solid, left: solid] label "Roof (east)" style Terrace
+    room RoofSW at (0,25.9) size (11 x 8.5) height 3ft walls [top: solid, right: solid, bottom: solid, left: solid] label "Roof (SW, water tank)" style Terrace
+    room Mumty at (11,25.9) size (5.6 x 8.5) height 8ft walls [top: solid, right: solid, bottom: window, left: solid] label "Stair cabin" style Stair
+  }
+
+  # ---------------- Ground floor openings ----------------
+  # Road gate into the parking porch, then the main door (east-facing) into the hall
+  connect Parking.bottom to outside double-door at 50% size (9.8ft x 7.8ft)
+  connect Parking.right to HallSouth.left door at 15% size (3.4ft x 7.2ft)
+
+  connect Bath.bottom to Bedroom.top door at 50%
+  connect WC.right to Passage.left door at 50%
+  connect Bedroom.right to Hall.left door at 79%
+  connect Pooja.left to HallNorth.right door at 50%
+
+  # The hall is one L-shaped space in the source; these openings rejoin its parts
+  connect Passage.right to HallNorth.left opening at 50% size (4.4ft x full)
+  connect HallNorth.bottom to Hall.top opening at 50% size (6.6ft x full)
+  connect Hall.bottom to HallSouth.top opening at 54% size (12.6ft x full)
+  connect StairWell.top to HallSouth.bottom opening at 50% size (5.6ft x full)
+  connect Kitchen.top to HallSouth.bottom opening at 30% size (3.2ft x 7.5ft)
+
+  # ---------------- First floor openings ----------------
+  connect Corridor.left to BathF.right door at 11%
+  connect Corridor.left to Bedroom2.right door at 59%
+  connect Corridor.left to LobbyF.right opening at 87% size (3.9ft x full)
+  connect Master.top to MasterBath.bottom door at 20%
+  connect Master.top to LobbyF.bottom door at 72%
+  connect Corridor.right to Utility.left door at 9%
+  connect NEPatch.left to Utility.right door at 50%
+  connect Corridor.right to Bedroom3.left door at 64%
+  connect Corridor.right to Lounge.left opening at 86% size (6.4ft x full)
+  connect Lounge.bottom to LoungeSouth.top opening at 62% size (8ft x full)
+  connect Lounge.bottom to StairWellF.top opening at 12% size (2.6ft x full)
+  connect StairWellF.right to LoungeSouth.left opening at 15% size (3.5ft x full)
+  connect LoungeSouth.bottom to Terrace.top double-door at 47% size (4.8ft x 8ft)
+  connect Corridor.bottom to StairWellF.top opening at 50% size (3ft x full)
+
+  # ---------------- Roof ----------------
+  # The roof slabs form one surface; the stair cabin door faces north
+  connect RoofWest.right to RoofEast.left opening at 58% size (21.9ft x full)
+  connect RoofWest.bottom to RoofSW.top opening at 30% size (11ft x full)
+  connect RoofWest.bottom to Mumty.top door at 67%
+
+  vertical GroundFloor.MainStair to FirstFloor.MainStair
